@@ -9,17 +9,16 @@ set :db_config, {
   password: 'dev_password'
 }
 
-# todoの一覧を取得するAPIエンドポイント
+# todoの一覧を表示するページ
 get '/todos' do
   conn = PG.connect(settings.db_config)
   result = conn.exec('SELECT * FROM todo')
 
-  todos = result.map do |row|
+  @todos = result.map do |row|
     { id: row['id'], title: row['title'] }
   end
 
   conn.close
 
-  content_type :json
-  todos.to_json
+  erb :todos
 end
